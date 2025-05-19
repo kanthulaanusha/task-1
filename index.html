@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily Weather Data Analyzer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    .summary {
+      margin-top: 20px;
+      background-color: #e2ffe2;
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Weather Data Analyzer</h1>
+
+  <div>
+    <input type="date" id="date" />
+    <input type="number" id="temperature" placeholder="Temperature (°C)" />
+    <input type="number" id="humidity" placeholder="Humidity (%)" />
+    <button onclick="addEntry()">Add Entry</button>
+  </div>
+
+  <table id="weatherTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Temperature (°C)</th>
+        <th>Humidity (%)</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <div class="summary" id="summary"></div>
+
+  <script>
+    const weatherData = [];
+
+    function addEntry() {
+      const date = document.getElementById('date').value;
+      const temperature = parseFloat(document.getElementById('temperature').value);
+      const humidity = parseFloat(document.getElementById('humidity').value);
+
+      if (!date || isNaN(temperature) || isNaN(humidity)) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
+
+      const entry = { date, temperature, humidity };
+      weatherData.push(entry);
+      updateTable();
+      updateSummary();
+      clearFields();
+    }
+
+    function updateTable() {
+      const tableBody = document.querySelector('#weatherTable tbody');
+      tableBody.innerHTML = '';
+      weatherData.forEach(entry => {
+        const row = `<tr>
+          <td>${entry.date}</td>
+          <td>${entry.temperature}</td>
+          <td>${entry.humidity}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    function updateSummary() {
+      if (weatherData.length === 0) return;
+      const temps = weatherData.map(e => e.temperature);
+      const avg = (temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(2);
+      const max = Math.max(...temps);
+      const min = Math.min(...temps);
+      document.getElementById('summary').innerHTML = `
+        <strong>Summary:</strong><br>
+        Average Temperature: ${avg} °C<br>
+        Highest Temperature: ${max} °C<br>
+        Lowest Temperature: ${min} °C
+      `;
+    }
+
+    function clearFields() {
+      document.getElementById('date').value = '';
+      document.getElementById('temperature').value = '';
+      document.getElementById('humidity').value = '';
+    }
+  </script>
+
+</body>
+</html>
